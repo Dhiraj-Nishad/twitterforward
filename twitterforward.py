@@ -4,7 +4,7 @@ import asyncio
 import time
 
 # Twitter API credentials
-BEARER_TOKEN = 'AAAAAAAAAAAAAAAAAAAAAEn9yQEAAAAAB8gWlDngigGQzDDvl25vMHE6pTE%3DIoYaAu0IUGLGum0MizBxUbB8nrKCvWMzZwLvGA2dsKVy6JjbNp'  # Replace with your actual bearer token
+BEARER_TOKEN = 'AAAAAAAAAAAAAAAAAAAAAEn9yQEAAAAAB8gWlDngigGQzDDvl25vMHE6pTE%3DIoYaAu0IUGLGum0MizBxUbB8nrKCvWMzZwLvGA2dsKVy6JjbNp'  # Your actual bearer token
 
 # Telegram API credentials
 API_ID = 29199461  # Your API ID from my.telegram.org
@@ -34,11 +34,15 @@ def forward_tweets():
                         asyncio.run(send_message_to_telegram(tweet.text))
                         last_tweet_id = tweet.id
             
+            # Wait for 1 minute after fetching and forwarding tweets
             time.sleep(60)  # Wait for 1 minute before checking for new tweets
         
-        except tweepy.errors.Forbidden as e:
-            print(f"Error: {e}")
-            break  # Exit loop if access is forbidden
+        except tweepy.errors.TooManyRequests as e:
+            print(f"Rate limit exceeded: {e}. Waiting for reset.")
+            time.sleep(15 * 60)  # Wait for 15 minutes before retrying
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            break  # Exit loop on other errors
 
 if __name__ == "__main__":
     forward_tweets()
