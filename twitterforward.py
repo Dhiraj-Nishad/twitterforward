@@ -26,7 +26,7 @@ def forward_tweets():
     while True:
         try:
             client = tweepy.Client(bearer_token=BEARER_TOKEN)
-            response = client.get_users_tweets(id='user_id_here', max_results=5)  # Replace with actual user ID
+            response = client.get_users_tweets(id='godofhell__', max_results=5)  # Replace with actual user ID
             
             if response.data:
                 for tweet in response.data:
